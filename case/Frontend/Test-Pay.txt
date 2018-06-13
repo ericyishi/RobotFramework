@@ -1,0 +1,9 @@
+*** Settings ***
+Resource          ../../flows-front.txt
+
+*** Test Cases ***
+结算订单
+    提交订单    123@1.com    123456    //div[@id='content']/div/div[3]/dl/dd/ul/li/dl/dt/a/img    //div[@id='product-intro']/div/dl/dd/ul/li/span    红色    //div[@id='product-intro']/div/dl/dd/ul/li/span
+    ...    //div[@id='product-intro']/div/dl[2]/dd/ul/li/span    link=加入购物车
+    f验证信息    css= .f18
+    f关闭浏览器

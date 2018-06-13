@@ -1,0 +1,8 @@
+*** Settings ***
+Library           Selenium2Library
+Resource          ../../flows-back.txt
+
+*** Test Cases ***
+正确输入用户名密码
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    [Teardown]    b关闭浏览器

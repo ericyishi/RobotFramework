@@ -1,0 +1,34 @@
+*** Settings ***
+Resource          action-back.txt
+
+*** Keywords ***
+后台登录流程
+    [Arguments]    ${url}    ${username}    ${password}    ${verifycode}    ${locator}    ${text}
+    b打开浏览器    ${url}
+    b输入用户名    ${username}
+    b输入密码    ${password}
+    b输入验证码    ${verifycode}
+    b登录
+    b等待验证点出现    ${locator}    ${text}
+
+新增商品
+    [Arguments]    ${category}    ${type}    ${brand}    ${productName}    ${keyword}    ${goods_no}
+    ...    ${isCheck}    ${isUploadpic}    ${store_nums}    ${weight}    ${sell_price}    ${market_price}
+    ...    ${cost_price}
+    b点击导航菜单    link=商品中心
+    b点击添加    //a[contains(text(),'添加')]
+    b等待验证点出现    css=.tab-head li.current    基本信息
+    b选择分类    ${category}
+    b选择类型    ${type}
+    b选择品牌    ${brand}
+    b输入商品名称    ${productName}
+    b输入商品关键字    ${keyword}
+    b输入商品编号    ${goods_no}
+    Run Keyword If    '${isCheck}' =='true'    b不勾选是否上架
+    Run Keyword If    '${isUploadpic}'=='true'    b上传图片
+    b输入库存数    ${store_nums}
+    b输入重量    ${weight}
+    b输入零售价    ${sell_price}
+    b输入市场价    ${market_price}
+    b输入成本价    ${cost_price}
+    b点击提交

@@ -1,0 +1,21 @@
+*** Settings ***
+Resource          ../../flows-front.txt
+Resource          ../../action-front.txt
+
+*** Test Cases ***
+成功添加商品到购物车
+    加入购物车    123@1.com    123456    //div[@id='content']/div/div[3]/dl/dd/ul/li/dl/dt/a/img    //div[@id='product-intro']/div/dl/dd/ul/li/span    红色
+    f点击选择商品属性1    //div[@id='product-intro']/div/dl/dd/ul/li/span
+    f点击选择商品属性2    //div[@id='product-intro']/div/dl[2]/dd/ul/li/span
+    f点击加入购物车    link=加入购物车
+    f点击去结算
+    f验证信息    css=.btn
+    f关闭浏览器
+
+不选择商品规格添加失败
+    加入购物车    123@1.com    123456    //div[@id='content']/div/div[3]/dl/dd/ul/li/dl/dt/a/img    css=#product-intro div .spec-values li:nth-child(1)    红色
+    f点击选择商品属性1    css=#product-intro div .spec-values li:nth-child(1)
+    f点击加入购物车    link=加入购物车
+    f等待验证点出现    css=#product-intro>div p span    请选择您要购买的商品规格！
+    f验证信息    css=#product-intro>div p span
+    f关闭浏览器

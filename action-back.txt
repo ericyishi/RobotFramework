@@ -1,0 +1,117 @@
+*** Settings ***
+Library           Selenium2Library
+Library           DatabaseLibrary
+
+*** Keywords ***
+b等待验证点出现
+    [Arguments]    ${locator}    ${text}
+    Wait Until Element Contains    ${locator}    ${text}
+
+b验证信息
+    [Arguments]    ${locator}
+    Page Should Contain Element    ${locator}
+
+b点击导航菜单
+    [Arguments]    ${link}
+    Click Link    ${link}
+
+b选择下拉
+    [Arguments]    ${locator}    ${item-content}
+    Select From List    ${locator}    ${item-content}
+
+b点击添加
+    [Arguments]    ${locator}
+    Click Element    ${locator}
+
+b选择分类
+    [Arguments]    ${item-content}
+    b选择下拉    id=category_id    ${item-content}
+
+b选择类型
+    [Arguments]    ${item-content}
+    b选择下拉    id=type_id    ${item-content}
+
+b登录
+    Click Button    css=input.button
+
+b输入密码
+    [Arguments]    ${password}
+    Input Password    name=password    123456
+
+b输入用户名
+    [Arguments]    ${username}
+    Input Text    name=name    ${username}
+
+b输入验证码
+    [Arguments]    ${verifycode}
+    Input Text    name=verifyCode    ${verifycode}
+
+b选择品牌
+    [Arguments]    ${item-content}
+    b选择下拉    name=brand_id    ${item-content}
+
+b输入商品名称
+    [Arguments]    ${productname}
+    Input Text    name=name    ${productname}
+
+b输入商品关键字
+    [Arguments]    ${keyword}
+    Input Text    name=tag_ids    ${keyword}
+
+b输入商品编号
+    [Arguments]    ${goods_no}
+    Input Text    name=goods_no    ${goods_no}
+
+b勾选checkbox
+    [Arguments]    ${locator}
+    Click Element    ${locator}
+
+b不勾选是否上架
+    b勾选checkbox    css=input[type="checkbox"]
+
+b输入库存数
+    [Arguments]    ${store_nums}
+    Input Text    name=store_nums    ${store_nums}
+
+b输入重量
+    [Arguments]    ${weight}
+    Input Text    name=weight    ${weight}
+
+b输入零售价
+    [Arguments]    ${sell_price}
+    Input Text    name=sell_price    ${sell_price}
+
+b输入市场价
+    [Arguments]    ${market_price}
+    Input Text    name=market_price    ${market_price}
+
+b输入成本价
+    [Arguments]    ${cost_price}
+    Input Text    name=cost_price    ${cost_price}
+
+b点击提交
+    Click Element    css=input.focus_button
+
+b上传图片
+    Click Element    css=.button.select_button
+    Select Frame    name=Openupimg_dialog
+    Click Element    css=.tab-head>li:nth-child(2)
+    Click Element    css=.gallery>li:nth-child(1)
+    Click Element    css=.alone_footer>button
+    Unselect Frame
+
+b打开浏览器
+    [Arguments]    ${url}
+    Open Browser    ${url}
+
+b关闭浏览器
+    Close Browser
+
+b返回前台
+    Click Element    css=.nav_sub a:nth-child(1)
+
+b数据库删除数据
+    [Arguments]    ${sql}
+    Connect To Database Using Custom Params    pymysql    host="127.0.0.1",port=3306,user='root',passwd='root',db='tinyshop1_7_ws'
+    log    ${sql}
+    Execute Sql String    ${sql}

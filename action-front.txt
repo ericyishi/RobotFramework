@@ -1,0 +1,89 @@
+*** Settings ***
+Library           Selenium2Library
+Library           Collections
+
+*** Keywords ***
+f输入用户名
+    [Arguments]    ${username}
+    Input Text    id=email    ${username}
+
+f输入密码
+    [Arguments]    ${password}
+    Input Password    name=password    ${password}
+
+f点击登录
+    Click Button    css=input.btn
+
+f等待验证点出现
+    [Arguments]    ${locator}    ${text}
+    Wait Until Element Contains    ${locator}    ${text}
+
+f验证信息
+    [Arguments]    ${locator}
+    Page Should Contain Element    ${locator}
+
+f注销
+    [Arguments]    ${text}
+    Click Link    ${text}
+
+f进入商品页
+    Click Image    //div[@id='header']/div[2]/div/div/a/img
+
+f点击商品
+    [Arguments]    ${locator}
+    Click Image    ${locator}
+
+f点击选择商品属性1
+    [Arguments]    ${locator}
+    Click Element    ${locator}
+
+f点击选择商品属性2
+    [Arguments]    ${locator}
+    Click Element    ${locator}
+
+f点击加入购物车
+    [Arguments]    ${locator}
+    Click Link    ${locator}
+
+f点击去结算
+    Wait Until Element Contains    link=去结算    去结算
+    Click Link    link=去结算
+
+f点击结算
+    Click Link    link=结算
+
+f点击地址
+    Click Element    //input[@name='address_id']
+
+f选择付款方式
+    Click Element    //div[@id='content']/div/div[2]/form/div[2]/ul/li/label
+
+f点击提交订单
+    Click Element    //div[@id='content']/div/div[2]/form/div[6]/p/input
+
+f点击付款
+    Click Element    //div[@id='content']/div/div[2]/form/div[3]/p/input
+
+f输入搜索内容
+    [Arguments]    ${text}
+    Input Text    id=search-keyword    ${text}
+
+f点击搜索
+    Click Element    css=.btn-search
+
+f打开浏览器
+    [Arguments]    ${url}
+    Open Browser    ${url}
+
+f关闭浏览器
+    Close Browser
+
+f切换窗口
+    ${titles}    Get Window Titles
+    ${title2}    Get From List    ${titles}    1
+    ${title1}    Get From List    ${titles}    0
+    Log    ${titles}
+    log    ${title2}
+    log    ${title1}
+    Close Window
+    Select Window    title=${title2}

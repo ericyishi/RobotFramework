@@ -1,0 +1,42 @@
+*** Settings ***
+Resource          action-front.txt
+Library           Selenium2Library
+
+*** Keywords ***
+登录流程
+    [Arguments]    ${username}    ${password}    ${locator}    ${text}
+    [Documentation]    111
+    f打开浏览器    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=simple&act=login
+    f输入用户名    ${username}
+    f输入密码    ${password}
+    f点击登录
+    f等待验证点出现    ${locator}    ${text}
+
+加入购物车
+    [Arguments]    ${username}    ${password}    ${locator}    ${sm}    ${cm}
+    f打开浏览器    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=simple&act=login
+    f输入用户名    ${username}
+    f输入密码    ${password}
+    f点击登录
+    f进入商品页
+    f点击商品    ${locator}
+    f等待验证点出现    ${sm}    ${cm}
+
+提交订单
+    [Arguments]    ${username}    ${password}    ${locator}    ${sm}    ${cm}    ${size}
+    ...    ${color}    ${add}
+    加入购物车    ${username}    ${password}    ${locator}    ${sm}    ${cm}
+    f点击选择商品属性1    //div[@id='product-intro']/div/dl/dd/ul/li/span
+    f点击选择商品属性2    //div[@id='product-intro']/div/dl[2]/dd/ul/li/span
+    f点击加入购物车    link=加入购物车
+    f点击去结算
+    f点击结算
+    f点击地址
+    f选择付款方式
+    f点击提交订单
+    f点击付款
+
+前台商品搜索
+    [Arguments]    ${content}
+    f输入搜索内容    ${content}
+    f点击搜索

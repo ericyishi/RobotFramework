@@ -1,0 +1,241 @@
+*** Settings ***
+Resource          ../../flows-front.txt
+Resource          ../../flows-back.txt
+Resource          ../../action-back.txt
+Resource          ../../action-front.txt
+
+*** Test Cases ***
+正确添加商品
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    12    10    100    120
+    ...    80
+    b返回前台
+    f切换窗口
+    前台商品搜索    test1111
+    f等待验证点出现    css=.product_show .product .title b:nth-child(1)    test1111
+    f验证信息    css=.product_show .product .title b:nth-child(1)
+    b数据库删除数据    delete from tiny_products where pro_no='g1234567890'
+    [Teardown]    f关闭浏览器
+
+不填写商品名称
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    ${EMPTY}    测试1 测试2    g1234567890
+    ...    true    true    12    10    100    120
+    ...    80
+    b等待验证点出现    css=.invalid-msg    不能为空
+    b验证信息    css=.invalid-msg
+    [Teardown]    b关闭浏览器
+
+不填写商品编号
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    p1234    测试1 测试2    ${EMPTY}
+    ...    true    true    12    10    100    120
+    ...    80
+    b等待验证点出现    css=.invalid-msg    请输入3个以上的字符(不能为中文)
+    b验证信息    css=.invalid-msg
+    [Teardown]    b关闭浏览器
+
+商品编号填写不足3位
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    p1234    测试1 测试2    12
+    ...    true    true    12    10    100    120
+    ...    80
+    b等待验证点出现    css=.invalid-msg    请输入3个以上的字符(不能为中文)
+    b验证信息    css=.invalid-msg
+    [Teardown]    b关闭浏览器
+
+商品编号填写为汉字
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    p1234    测试1 测试2    大家好我是
+    ...    true    true    12    10    100    120
+    ...    80
+    b等待验证点出现    css=.invalid-msg    请输入3个以上的字符(不能为中文)
+    b验证信息    css=.invalid-msg
+    [Teardown]    b关闭浏览器
+
+不选图片上传
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    false    12    10    100    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    添加商品图片
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+不填库存
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    ${EMPTY}    10    100    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    必需为整数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+库存为负数
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    -1    10    100    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    必需为整数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+库存为小数
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    9.9    10    100    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    必需为整数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+库存为字符
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    hao    10    100    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    必需为整数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+不填重量
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    ${EMPTY}    2    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    必需为整数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+重量为负数
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    -1    2    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    必需为整数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+重量为小数
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    3.3    2    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    必需为整数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+重量为字符
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    你好    2    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    必需为整数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+不填零售价
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    2    ${EMPTY}    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    整数或保留小数点后两位精确度的数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+零售价为负数
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    2    -2    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    整数或保留小数点后两位精确度的数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+零售价为字符
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    2    哈哈    120
+    ...    80
+    f等待验证点出现    css=.invalid-msg    整数或保留小数点后两位精确度的数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+不填市场价
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    2    2    ${EMPTY}
+    ...    80
+    f等待验证点出现    css=.invalid-msg    整数或保留小数点后两位精确度的数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+市场价负数
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    2    2    -44
+    ...    80
+    f等待验证点出现    css=.invalid-msg    整数或保留小数点后两位精确度的数
+    f验证信息    css=.invalid-msg
+    f关闭浏览器
+    [Teardown]    f关闭浏览器
+
+市场价为字符
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    2    2    会话
+    ...    80
+    f等待验证点出现    css=.invalid-msg    整数或保留小数点后两位精确度的数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+不填成本价
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    2    80    20
+    ...    ${EMPTY}
+    f等待验证点出现    css=.invalid-msg    整数或保留小数点后两位精确度的数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+成本价为负数
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    2    80    20
+    ...    -9
+    f等待验证点出现    css=.invalid-msg    整数或保留小数点后两位精确度的数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
+
+成本价为字符
+    [Tags]    addProduct
+    后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
+    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    ...    true    true    10    2    80    20
+    ...    版本
+    f等待验证点出现    css=.invalid-msg    整数或保留小数点后两位精确度的数
+    f验证信息    css=.invalid-msg
+    [Teardown]    f关闭浏览器
