@@ -8,15 +8,15 @@ Resource          ../../action-front.txt
 正确添加商品
     [Tags]    addProduct
     后台登录流程    http://localhost:9999/TinyShop_v1.7/TinyShop_v1.7/index.php?con=admin&act=login    admin    123456    aaaa    css=.nav_sub>a:last-child    退出
-    新增商品    ├──男式    男式衬衫    三星    test1111    测试1 测试2    g1234567890
+    新增商品    ├──男式    男式衬衫    三星    testright    测试1 测试2    h123456
     ...    true    true    12    10    100    120
     ...    80
     b返回前台
     f切换窗口
-    前台商品搜索    test1111
-    f等待验证点出现    css=.product_show .product .title b:nth-child(1)    test1111
+    前台商品搜索    testright
+    f等待验证点出现    css=.product_show .product .title b:nth-child(1)    testright
     f验证信息    css=.product_show .product .title b:nth-child(1)
-    b数据库删除数据    delete from tiny_products where pro_no='g1234567890'
+    b数据库删除数据    delete from tiny_goods where pro_no='h123456'
     [Teardown]    f关闭浏览器
 
 不填写商品名称
